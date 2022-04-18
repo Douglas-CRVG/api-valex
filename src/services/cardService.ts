@@ -1,6 +1,7 @@
 import * as cardRepository from "../repositories/cardRepository.js"
 import { faker } from '@faker-js/faker';
 import dayjs from "dayjs";
+import bcrypt from "bcrypt";
 
 export async function create(type: string, employee: any){
     await uniqueCard(type, employee.id);
@@ -29,7 +30,7 @@ function formatCard(type: string, employee: any){
         number: faker.finance.creditCardNumber("mastercard"),
         cardholderName: formatCardHolderName(fullName),
         securityCode: faker.finance.creditCardCVV(),
-        expirationDate: dayjs().add(5, 'y').format('MM/YY'),
+        expirationDate: dayjs().add(5, "y").format("MM/YY"),
         password: null,
         isVirtual: false,
         originalCardId: null,
@@ -55,4 +56,40 @@ function formatCardHolderName(name: string){
     }
 
     return holderName;
+}
+
+export async function activateCard(securityCode: string, password: string, id: number){
+    const card = await resgisteredCard(id);
+
+    expirationCard(card.expirationDate)
+
+    isBlocked(card.isBlocked)
+
+    securityCodeVerification(securityCode, card.securityCode)
+
+    card.isBlocked = false;
+    card.password = bcrypt.hashSync(password, 10);
+    card.originalCardId = id;
+
+    await cardRepository.update(id, card)
+}
+
+async function resgisteredCard(id: number){
+    const existCard = await cardRepository.findById(id);
+
+    if(existCard) return existCard;
+
+    throw { type: "not_found"}
+}
+
+function expirationCard(date: string){
+    if (dayjs().format("MM/YY") > date) throw {type: "not_found"}
+}
+
+function isBlocked(blocked: boolean){
+    if(!blocked) throw {type: "conflict"}
+}
+
+function securityCodeVerification(cvc: string, cvcHash: string){
+    if(!bcrypt.compareSync(cvc, cvcHash)) throw {type: "unauthorized"}
 }
