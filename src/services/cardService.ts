@@ -1,4 +1,6 @@
-import * as cardRepository from "../repositories/cardRepository.js"
+import * as cardRepository from "../repositories/cardRepository.js";
+import * as paymentRepository from "../repositories/paymentRepository.js";
+import * as rechargeRepository from "../repositories/rechargeRepository.js";
 import { faker } from '@faker-js/faker';
 import dayjs from "dayjs";
 import bcrypt from "bcrypt";
@@ -92,4 +94,26 @@ function isBlocked(blocked: boolean){
 
 function securityCodeVerification(cvc: string, cvcHash: string){
     if(!bcrypt.compareSync(cvc, cvcHash)) throw {type: "unauthorized"}
+}
+
+export async function balanceCard(id: number){
+    await resgisteredCard(id);
+    const recharges = await rechargeRepository.findByCardId(id);
+    const transactions = await paymentRepository.findByCardId(id);
+    
+    let balance = sumAmount(recharges) - sumAmount(transactions);
+
+    return {
+        balance,
+        transactions,
+        recharges
+    }
+}
+
+function sumAmount(list: any[]){
+    const initial: number = 0;
+    
+    return list
+    .map(item => item.amount)
+    .reduce((sum, currentValue) => sum + currentValue, initial);
 }

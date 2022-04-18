@@ -15,6 +15,12 @@ cardsRouter.post(
     cards.createCard
 )
 
-cardsRouter.patch("/cards/:cardId/activate", validateSchemaMiddleware(schemas.activateCardSchema), cards.activateCard)
+cardsRouter.patch(
+    "/cards/:cardId/activate",
+    validateSchemaMiddleware(schemas.activateCardSchema),
+    cards.activateCard
+)
+
+cardsRouter.get("/cards/:cardId/balance", cards.balanceCard)
 
 export default cardsRouter;
