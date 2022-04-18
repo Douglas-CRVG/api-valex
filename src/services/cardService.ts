@@ -67,11 +67,10 @@ export async function activateCard(securityCode: string, password: string, id: n
 
     isBlocked(card.isBlocked)
 
-    securityCodeVerification(securityCode, card.securityCode)
+    await securityVerification(securityCode, card.securityCode)
 
     card.isBlocked = false;
     card.password = bcrypt.hashSync(password, 10);
-    card.originalCardId = id;
 
     await cardRepository.update(id, card)
 }
@@ -92,8 +91,8 @@ function isBlocked(blocked: boolean){
     if(!blocked) throw {type: "conflict"}
 }
 
-function securityCodeVerification(cvc: string, cvcHash: string){
-    if(!bcrypt.compareSync(cvc, cvcHash)) throw {type: "unauthorized"}
+export async function securityVerification(code: string, codeHash: string){
+    if(!bcrypt.compareSync(code, codeHash)) throw {type: "unauthorized"}
 }
 
 export async function balanceCard(id: number){
