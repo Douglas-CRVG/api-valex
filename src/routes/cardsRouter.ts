@@ -21,6 +21,21 @@ cardsRouter.patch(
     cards.activateCard
 )
 
-cardsRouter.get("/cards/:cardId/balance", cards.balanceCard)
+cardsRouter.get(
+    "/cards/:cardId/balance",
+    cards.balanceCard
+)
+
+cardsRouter.patch(
+    "/cards/:cardId/block",
+    validateSchemaMiddleware(schemas.blockedSchema),
+    cards.block
+)
+
+cardsRouter.patch(
+    "/cards/:cardId/unblock",
+    validateSchemaMiddleware(schemas.blockedSchema),
+    cards.unblock
+)
 
 export default cardsRouter;

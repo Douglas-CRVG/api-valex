@@ -25,3 +25,21 @@ export async function balanceCard(req: Request, res: Response){
 
     res.status(200).send(result)
 }
+
+export async function block(req: Request, res: Response){
+    const id = Number(req.params.cardId);
+    const {password} = req.body;
+
+    await cardService.toggleBlock(false, id, password)
+
+    res.sendStatus(200)
+}
+
+export async function unblock(req: Request, res: Response){
+    const id = Number(req.params.cardId);
+    const {password} = req.body;
+
+    await cardService.toggleBlock(true, id, password)
+
+    res.sendStatus(200)
+}

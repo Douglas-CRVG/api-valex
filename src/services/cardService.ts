@@ -116,3 +116,33 @@ function sumAmount(list: any[]){
     .map(item => item.amount)
     .reduce((sum, currentValue) => sum + currentValue, initial);
 }
+
+//============================ BLOCK UNLOCK =============================
+
+export async function toggleBlock(blocked: boolean, id: number, password: string){
+    const card = await resgisteredCard(id);
+
+    expirationCard(card.expirationDate)
+
+    const newBlocked = isBlockedNoError(blocked, card.isBlocked)
+
+    existPassword(card.password)
+
+    securityVerification(password, card.password)
+
+    card.isBlocked = newBlocked;
+
+    await cardRepository.update(id, card)
+}
+
+function isBlockedNoError(blocked: boolean, isBlocked: boolean){
+    if (!(blocked === isBlocked)) throw {type: "conflict"}
+
+    if (isBlocked) return false
+
+    return true
+}
+
+function existPassword(password: any){
+    if(!password) throw {type: "unauthorized"}
+}
