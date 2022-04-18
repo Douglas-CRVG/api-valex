@@ -76,7 +76,7 @@ export async function activateCard(securityCode: string, password: string, id: n
     await cardRepository.update(id, card)
 }
 
-async function resgisteredCard(id: number){
+export async function resgisteredCard(id: number){
     const existCard = await cardRepository.findById(id);
 
     if(existCard) return existCard;
@@ -84,7 +84,7 @@ async function resgisteredCard(id: number){
     throw { type: "not_found"}
 }
 
-function expirationCard(date: string){
+export function expirationCard(date: string){
     if (dayjs().format("MM/YY") > date) throw {type: "not_found"}
 }
 
