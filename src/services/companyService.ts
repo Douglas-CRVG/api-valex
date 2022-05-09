@@ -1,8 +1,8 @@
-import * as companyRepository from "../repositories/companyRepository.js"
-export async function findByApiKey(apiKey: string){
-    const company = await companyRepository.findByApiKey(apiKey);
+import * as companyRepository from "../repositories/companyRepository.js";
+export async function findByApiKey(apiKey: string) {
+  const company = await companyRepository.findByApiKey(apiKey);
 
-    if (company) return company;
+  if (company) return company;
 
-    throw {type: "unauthorized"}
+  throw { type: "unauthorized" };
 }

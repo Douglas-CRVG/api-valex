@@ -4,6 +4,10 @@ import { validateSchemaMiddleware } from "../middlewares/validateSchemaMiddlewar
 import paymentSchema from "../schemas/paymentSchema.js";
 
 const paymentRouter = Router();
-paymentRouter.post("/payment/:cardId", validateSchemaMiddleware(paymentSchema), paymentController.payment)
+paymentRouter.post(
+  "/payment/:cardId",
+  validateSchemaMiddleware(paymentSchema),
+  paymentController.payment
+);
 
 export default paymentRouter;
